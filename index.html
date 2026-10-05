@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Password Security Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <i class="fa-solid fa-shield-halved logo-icon"></i>
+                <h2>PassVault <span>Pro</span></h2>
+            </div>
+            <nav class="nav-menu">
+                <button class="nav-item active" data-target="analyzer-view">
+                    <i class="fa-solid fa-chart-line"></i> Analyzer
+                </button>
+                <button class="nav-item" data-target="generator-view">
+                    <i class="fa-solid fa-key"></i> Generator
+                </button>
+                <button class="nav-item" data-target="tips-view">
+                    <i class="fa-solid fa-clipboard-check"></i> Security Tips
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <p>Status: <span class="status-online"><i class="fa-solid fa-circle"></i> Local Engine Ready</span></p>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- VIEW 1: ANALYZER -->
+            <div id="analyzer-view" class="view-section active">
+                <header class="top-header">
+                    <h1>Password Strength & Entropy Analyzer</h1>
+                    <p>Real-time client-side cryptographic analysis engine</p>
+                </header>
+
+                <div class="dashboard-grid">
+                    <!-- Main Input & Meter Card -->
+                    <section class="card input-card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-lock"></i> Password Evaluation</h3>
+                            <button id="togglePasswordVisibility" class="icon-btn" title="Toggle Visibility">
+                                <i class="fa-solid fa-eye" id="eyeIcon"></i>
+                            </button>
+                        </div>
+                        <div class="input-wrapper">
+                            <input type="password" id="passwordInput" placeholder="Enter or paste password to analyze..." autocomplete="off">
+                            <div class="copy-action">
+                                <button id="copyPasswordBtn" class="btn btn-secondary"><i class="fa-regular fa-copy"></i> Copy</button>
+                            </div>
+                        </div>
+
+                        <!-- Strength Score Bar -->
+                        <div class="strength-meter-container">
+                            <div class="meter-labels">
+                                <span>Security Score</span>
+                                <span id="scoreText">0% (Empty)</span>
+                            </div>
+                            <div class="meter-track">
+                                <div class="meter-fill" id="meterFill"></div>
+                            </div>
+                        </div>
+
+                        <!-- Primary Stats Row -->
+                        <div class="stats-row">
+                            <div class="stat-box">
+                                <i class="fa-solid fa-bolt stat-icon"></i>
+                                <div>
+                                    <h4>Entropy</h4>
+                                    <span id="entropyValue">0 bits</span>
+                                </div>
+                            </div>
+                            <div class="stat-box">
+                                <i class="fa-solid fa-clock stat-icon"></i>
+                                <div>
+                                    <h4>Crack Time Estimate</h4>
+                                    <span id="crackTimeValue">Instant</span>
+                                </div>
+                            </div>
+                            <div class="stat-box">
+                                <i class="fa-solid fa-text-height stat-icon"></i>
+                                <div>
+                                    <h4>Length</h4>
+                                    <span id="charCountValue">0 chars</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Criteria & Rules Requirements -->
+                    <section class="card criteria-card">
+                        <h3><i class="fa-solid fa-list-check"></i> Character Complexity</h3>
+                        <ul class="criteria-list">
+                            <li id="rule-length"><i class="fa-solid fa-xmark status-icon"></i> At least 12 characters</li>
+                            <li id="rule-uppercase"><i class="fa-solid fa-xmark status-icon"></i> Uppercase letters (A-Z)</li>
+                            <li id="rule-lowercase"><i class="fa-solid fa-xmark status-icon"></i> Lowercase letters (a-z)</li>
+                            <li id="rule-number"><i class="fa-solid fa-xmark status-icon"></i> Numbers (0-9)</li>
+                            <li id="rule-symbol"><i class="fa-solid fa-xmark status-icon"></i> Special symbols (!@#$%^&*)</li>
+                            <li id="rule-unique"><i class="fa-solid fa-xmark status-icon"></i> High character diversity (&gt; 60% unique)</li>
+                        </ul>
+                    </section>
+
+                    <!-- Detailed Security Breakdown -->
+                    <section class="card full-width-card">
+                        <h3><i class="fa-solid fa-bug"></i> Pattern & Vulnerability Breakdown</h3>
+                        <div class="vulnerability-list" id="vulnerabilityList">
+                            <div class="empty-state">Enter a password above to begin vulnerability scanning.</div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- VIEW 2: STANDALONE GENERATOR -->
+            <div id="generator-view" class="view-section">
+                <header class="top-header">
+                    <h1>Cryptographic Password Generator</h1>
+                    <p>Generate highly secure, randomized passwords locally using Web Crypto API</p>
+                </header>
+
+                <div class="dashboard-grid">
+                    <section class="card full-width-card">
+                        <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Generator Options</h3>
+                        
+                        <div class="generator-output-box">
+                            <input type="text" id="generatedResult" readonly placeholder="Click 'Generate' to create password">
+                            <button id="copyGeneratedBtn" class="btn btn-secondary"><i class="fa-regular fa-copy"></i> Copy</button>
+                        </div>
+
+                        <div class="gen-controls" style="margin-top: 24px;">
+                            <div class="control-group">
+                                <label for="genLength">Length: <span id="genLengthVal">16</span> characters</label>
+                                <input type="range" id="genLength" min="8" max="64" value="16">
+                            </div>
+                            <div class="checkbox-grid">
+                                <label><input type="checkbox" id="incUpper" checked> Include Uppercase (A-Z)</label>
+                                <label><input type="checkbox" id="incLower" checked> Include Lowercase (a-z)</label>
+                                <label><input type="checkbox" id="incNumbers" checked> Include Numbers (0-9)</label>
+                                <label><input type="checkbox" id="incSymbols" checked> Include Symbols (!@#$%)</label>
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <button id="generateBtn" class="btn btn-primary"><i class="fa-solid fa-rotate"></i> Generate New Password</button>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- VIEW 3: SECURITY TIPS & AUDIT -->
+            <div id="tips-view" class="view-section">
+                <header class="top-header">
+                    <h1>Password Security Best Practices</h1>
+                    <p>Essential guidance for keeping your online accounts safe</p>
+                </header>
+
+                <div class="tips-grid">
+                    <div class="card tip-card">
+                        <i class="fa-solid fa-key tip-icon"></i>
+                        <h3>Use Unique Passwords</h3>
+                        <p>Never reuse passwords across multiple sites. If one service suffers a data breach, hackers will attempt your credentials everywhere else.</p>
+                    </div>
+
+                    <div class="card tip-card">
+                        <i class="fa-solid fa-shield-virus tip-icon"></i>
+                        <h3>Enable Multi-Factor Authentication (MFA)</h3>
+                        <p>Always enable Two-Factor (2FA) or MFA using an authenticator app (like Google Authenticator or YubiKey) instead of SMS whenever available.</p>
+                    </div>
+
+                    <div class="card tip-card">
+                        <i class="fa-solid fa-vault tip-icon"></i>
+                        <h3>Use a Password Manager</h3>
+                        <p>Instead of memorizing dozens of complex passwords, store them in an encrypted vault like Bitwarden, 1Password, or KeePass.</p>
+                    </div>
+
+                    <div class="card tip-card">
+                        <i class="fa-solid fa-phrase tip-icon"></i>
+                        <h3>Prefer Passphrases Over Passwords</h3>
+                        <p>A phrase like <code>correct-horse-battery-staple</code> is easier to remember and significantly harder to brute-force than <code>P@ss1</code>.</p>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
